@@ -173,9 +173,9 @@ function handleFormat() {
   result.value = html
     .replaceAll("[TW]", "")
     .replaceAll("[EN]", "")
-    .replaceAll('<em class="tw">', "[TW]")
-    .replaceAll('<em class="en">', "[EN]")
-    .replaceAll("</em>", "")
+    .replaceAll('<span class="tw">', "[TW]")
+    .replaceAll('<span class="en">', "[EN]")
+    .replaceAll("</span>", "")
     .replace(/(<([^>]+)>)/gi, "")
 }
 
