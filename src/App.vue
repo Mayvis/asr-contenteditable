@@ -40,6 +40,8 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
     return
   }
 
+  if (e.isComposing === true) return
+
   const isController =
     e.code === "ArrowDown" ||
     e.code === "ArrowUp" ||
