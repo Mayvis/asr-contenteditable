@@ -53,6 +53,8 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
   const selection = window.getSelection() as Selection
   const cloneRange = selection.getRangeAt(0).cloneRange()
 
+  console.log(cloneRange.startContainer.nodeName)
+
   if (cloneRange.startContainer.nodeName === "#text") {
     const parentNode = cloneRange.startContainer.parentNode
 
@@ -76,6 +78,18 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
             cloneRange.collapse(false)
 
             cloneRange.insertNode(node)
+            cloneRange.setStart(node, 0)
+
+            selection.removeAllRanges()
+            selection.addRange(cloneRange)
+          } else if (cloneRange.startOffset === 0) {
+            cloneRange.setStartBefore(parentNode)
+
+            const node = document.createTextNode("_")
+            cloneRange.collapse(false)
+
+            parentNode.parentNode?.insertBefore(node, parentNode)
+
             cloneRange.setStart(node, 0)
 
             selection.removeAllRanges()
