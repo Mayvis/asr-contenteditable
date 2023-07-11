@@ -34,9 +34,10 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         e.key !== "Delete" &&
         e.key !== "Enter" &&
         e.metaKey === false &&
-        e.ctrlKey === false
+        e.ctrlKey === false &&
+        e.shiftKey === false
       ) {
-        if (parentNode.nodeName === "EM") {
+        if (parentNode.nodeName === "SPAN") {
           if (
             cloneRange.startOffset ===
             cloneRange.startContainer.textContent?.length
@@ -60,7 +61,7 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
 }
 
 function handleCreateTag(tag: string) {
-  const node = document.createElement("em")
+  const node = document.createElement("span")
   node.innerText = tag
   node.classList.add(tag === "[TW]" ? "tw" : "en")
 
@@ -78,7 +79,7 @@ function handleInsertTag(tag: string) {
     const parentNode = cloneRange.startContainer.parentNode
 
     if (parentNode) {
-      if (parentNode.nodeName === "EM") {
+      if (parentNode.nodeName === "SPAN") {
         if (cloneRange.startOffset === parentNode.textContent?.length) {
           // <em>hello</em> <- 代表從後面插入
           const node = handleCreateTag(tag)
@@ -94,6 +95,15 @@ function handleInsertTag(tag: string) {
           const node = handleCreateTag(tag)
 
           cloneRange.setStartBefore(parentNode)
+
+          cloneRange.collapse(false)
+          cloneRange.insertNode(node)
+
+          selection.removeAllRanges()
+          selection.addRange(cloneRange)
+        } else if (cloneRange.startOffset === cloneRange.endOffset) {
+          // 代表從 SPAN or TEXT 中間插入
+          const node = handleCreateTag(tag)
 
           cloneRange.collapse(false)
           cloneRange.insertNode(node)
@@ -151,8 +161,8 @@ onMounted(() => {
   document.addEventListener("keydown", handleRegisterKeydown)
 
   const data = "he[TW]ll[TW]o wor[EN]ld"
-    .replaceAll("[TW]", '<em class="tw">[TW]</em>')
-    .replaceAll("[EN]", '<em class="en">[EN]</em>')
+    .replaceAll("[TW]", '<span class="tw">[TW]</span>')
+    .replaceAll("[EN]", '<span class="en">[EN]</span>')
 
   text.value = data
 })
@@ -183,7 +193,7 @@ onUnmounted(() => {
   padding: 10px;
   min-height: 100px;
 
-  :deep(em) {
+  :deep(span) {
     &.tw {
       color: red;
     }
