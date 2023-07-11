@@ -8,6 +8,32 @@ const platform = (
   navigator.userAgentData?.platform || navigator.platform
 ).toLowerCase()
 
+function handleContenteditableInput(e: Event) {
+  const target = e.target as HTMLDivElement
+
+  target.childNodes.forEach((childNode, index) => {
+    if (childNode.nodeName === "FONT") {
+      // browser will save the style, and add font tag on it, so manually manipulate the font tag to text node
+      const text = childNode.textContent || ""
+      const parentNode = childNode.parentNode
+
+      if (parentNode) {
+        parentNode.removeChild(childNode)
+        const newTextNode = document.createTextNode(text)
+        parentNode.insertBefore(newTextNode, parentNode.childNodes[index])
+
+        const selection = window.getSelection() as Selection
+        const cloneRange = selection.getRangeAt(0).cloneRange()
+
+        cloneRange.setStart(newTextNode, 1)
+
+        selection.removeAllRanges()
+        selection.addRange(cloneRange)
+      }
+    }
+  })
+}
+
 function handleContenteditableKeydown(e: KeyboardEvent) {
   if (e.code === "Enter" && e.isComposing === false) {
     e.preventDefault()
@@ -178,6 +204,7 @@ onUnmounted(() => {
     class="contenteditable"
     v-html="text"
     @keydown="handleContenteditableKeydown"
+    @input="handleContenteditableInput"
   ></div>
 
   <div class="result">
