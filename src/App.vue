@@ -72,8 +72,7 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
           ) {
             cloneRange.setEndAfter(parentNode)
 
-            const node = document.createElement("span")
-            node.innerText = "_" // give random text to hack
+            const node = document.createTextNode("_")
             cloneRange.collapse(false)
 
             cloneRange.insertNode(node)
@@ -123,15 +122,6 @@ function handleInsertTag(tag: string) {
           const node = handleCreateTag(tag)
 
           cloneRange.setStartBefore(parentNode)
-
-          cloneRange.collapse(false)
-          cloneRange.insertNode(node)
-
-          selection.removeAllRanges()
-          selection.addRange(cloneRange)
-        } else if (cloneRange.startOffset === cloneRange.endOffset) {
-          // 代表從 SPAN or TEXT 中間插入
-          const node = handleCreateTag(tag)
 
           cloneRange.collapse(false)
           cloneRange.insertNode(node)
