@@ -96,6 +96,40 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         }
       }
     }
+  } else if (cloneRange.startContainer.nodeName === "DIV") {
+    if (
+      e.key !== "Backspace" &&
+      e.key !== "Delete" &&
+      e.key !== "Enter" &&
+      e.ctrlKey === false &&
+      e.metaKey === false &&
+      (e.altKey === false || (e.key !== "Alt" && e.altKey === true)) &&
+      (e.shiftKey === false || (e.key !== "Shift" && e.shiftKey === true))
+    ) {
+      if (cloneRange.startOffset === cloneRange.endOffset) {
+        const node = document.createTextNode("_")
+        cloneRange.collapse(false)
+
+        cloneRange.insertNode(node)
+
+        cloneRange.setStart(node, 0)
+
+        selection.removeAllRanges()
+        selection.addRange(cloneRange)
+      } else {
+        const node = document.createTextNode("_")
+        cloneRange.collapse(false)
+
+        cloneRange.setStartBefore(cloneRange.startContainer.parentNode as Node)
+
+        cloneRange.insertNode(node)
+
+        cloneRange.setStart(node, 0)
+
+        selection.removeAllRanges()
+        selection.addRange(cloneRange)
+      }
+    }
   }
 }
 
@@ -127,7 +161,7 @@ function handleInsertTag(tag: string) {
 
           cloneRange.collapse(false)
 
-          cloneRange.setStart(node, 0)
+          cloneRange.setStartAfter(node)
 
           selection.removeAllRanges()
           selection.addRange(cloneRange)
@@ -139,6 +173,8 @@ function handleInsertTag(tag: string) {
           cloneRange.collapse(false)
           cloneRange.insertNode(node)
 
+          cloneRange.setStartAfter(node)
+
           selection.removeAllRanges()
           selection.addRange(cloneRange)
         }
@@ -148,6 +184,8 @@ function handleInsertTag(tag: string) {
 
         cloneRange.collapse(false)
         cloneRange.insertNode(node)
+
+        cloneRange.setStartAfter(node)
 
         selection.removeAllRanges()
         selection.addRange(cloneRange)
