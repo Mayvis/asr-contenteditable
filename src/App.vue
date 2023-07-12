@@ -200,15 +200,32 @@ function handleInsertTag(tag: string) {
       }
     }
   } else if (cloneRange.startContainer.nodeName === "DIV") {
-    // 代表直接在 contenteditable 插入，那就直接插入
-    const node = handleCreateTag(tag)
+    if (cloneRange.startContainer.textContent?.length === 0) {
+      // 代表直接在 contenteditable 插入且 contenteditable 沒有任何資料，那就直接插入
+      const node = handleCreateTag(tag)
 
-    cloneRange.collapse(false)
-    cloneRange.insertNode(node)
-    cloneRange.setStart(cloneRange.startContainer, 0)
+      cloneRange.collapse(false)
+      cloneRange.insertNode(node)
 
-    selection.removeAllRanges()
-    selection.addRange(cloneRange)
+      cloneRange.setStartAfter(node)
+
+      selection.removeAllRanges()
+      selection.addRange(cloneRange)
+    } else {
+      // 代表直接在 contenteditable 插入，但 contenteditable 有資料，那就在最後面插入
+      const node = handleCreateTag(tag)
+
+      cloneRange.setEndAfter(
+        cloneRange.startContainer.childNodes[cloneRange.startOffset - 1]
+      )
+      cloneRange.collapse(false)
+      cloneRange.insertNode(node)
+
+      cloneRange.setStartAfter(node)
+
+      selection.removeAllRanges()
+      selection.addRange(cloneRange)
+    }
   }
 }
 
