@@ -61,6 +61,7 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         e.key !== "Backspace" &&
         e.key !== "Delete" &&
         e.key !== "Enter" &&
+        e.ctrlKey === false &&
         e.metaKey === false &&
         (e.altKey === false || (e.key !== "Alt" && e.altKey === true)) &&
         (e.shiftKey === false || (e.key !== "Shift" && e.shiftKey === true))
