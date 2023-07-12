@@ -122,7 +122,7 @@ function handleInsertTag(tag: string) {
     if (parentNode) {
       if (parentNode.nodeName === "SPAN") {
         if (cloneRange.startOffset === parentNode.textContent?.length) {
-          // <em>hello</em> <- 代表從後面插入
+          // <span>hello</span> <- 代表從後面插入
           const node = handleCreateTag(tag)
 
           cloneRange.setEndAfter(parentNode)
@@ -132,7 +132,7 @@ function handleInsertTag(tag: string) {
           selection.removeAllRanges()
           selection.addRange(cloneRange)
         } else if (cloneRange.startOffset === 0) {
-          // <div contenteditable="true"><em>hello</em></div> <- 代表從div及em中間插入
+          // <div contenteditable="true"><span>hello</span></div> <- 代表從div及em中間插入
           const node = handleCreateTag(tag)
 
           cloneRange.setStartBefore(parentNode)
