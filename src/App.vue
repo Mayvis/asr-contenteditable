@@ -53,8 +53,6 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
   const selection = window.getSelection() as Selection
   const cloneRange = selection.getRangeAt(0).cloneRange()
 
-  console.log(cloneRange.startContainer.nodeName)
-
   if (cloneRange.startContainer.nodeName === "#text") {
     const parentNode = cloneRange.startContainer.parentNode
 
@@ -68,7 +66,19 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         e.shiftKey === false
       ) {
         if (parentNode.nodeName === "SPAN") {
-          if (
+          if (cloneRange.startOffset === 0 && cloneRange.endOffset === 0) {
+            cloneRange.setStartBefore(parentNode)
+
+            const node = document.createTextNode("_")
+            cloneRange.collapse(false)
+
+            parentNode.parentNode?.insertBefore(node, parentNode)
+
+            cloneRange.setStart(node, 0)
+
+            selection.removeAllRanges()
+            selection.addRange(cloneRange)
+          } else if (
             cloneRange.startOffset ===
             cloneRange.startContainer.textContent?.length
           ) {
@@ -78,18 +88,6 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
             cloneRange.collapse(false)
 
             cloneRange.insertNode(node)
-            cloneRange.setStart(node, 0)
-
-            selection.removeAllRanges()
-            selection.addRange(cloneRange)
-          } else if (cloneRange.startOffset === 0) {
-            cloneRange.setStartBefore(parentNode)
-
-            const node = document.createTextNode("_")
-            cloneRange.collapse(false)
-
-            parentNode.parentNode?.insertBefore(node, parentNode)
-
             cloneRange.setStart(node, 0)
 
             selection.removeAllRanges()
@@ -121,22 +119,23 @@ function handleInsertTag(tag: string) {
 
     if (parentNode) {
       if (parentNode.nodeName === "SPAN") {
-        if (cloneRange.startOffset === parentNode.textContent?.length) {
+        if (cloneRange.startOffset === 0 && cloneRange.endOffset === 0) {
+          // <div contenteditable="true"><span>hello</span></div> <- 代表從div及em中間插入
+          const node = handleCreateTag(tag)
+
+          parentNode.parentNode?.insertBefore(node, parentNode)
+
+          cloneRange.collapse(false)
+
+          cloneRange.setStart(node, 0)
+
+          selection.removeAllRanges()
+          selection.addRange(cloneRange)
+        } else if (cloneRange.startOffset === parentNode.textContent?.length) {
           // <span>hello</span> <- 代表從後面插入
           const node = handleCreateTag(tag)
 
           cloneRange.setEndAfter(parentNode)
-          cloneRange.collapse(false)
-          cloneRange.insertNode(node)
-
-          selection.removeAllRanges()
-          selection.addRange(cloneRange)
-        } else if (cloneRange.startOffset === 0) {
-          // <div contenteditable="true"><span>hello</span></div> <- 代表從div及em中間插入
-          const node = handleCreateTag(tag)
-
-          cloneRange.setStartBefore(parentNode)
-
           cloneRange.collapse(false)
           cloneRange.insertNode(node)
 
