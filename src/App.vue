@@ -61,9 +61,8 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         e.key !== "Backspace" &&
         e.key !== "Delete" &&
         e.key !== "Enter" &&
-        e.metaKey === false &&
-        e.ctrlKey === false &&
-        e.shiftKey === false
+        (e.altKey === false || (e.key !== "Alt" && e.altKey === true)) &&
+        (e.shiftKey === false || (e.key !== "Shift" && e.shiftKey === true))
       ) {
         if (parentNode.nodeName === "SPAN") {
           if (cloneRange.startOffset === 0 && cloneRange.endOffset === 0) {
