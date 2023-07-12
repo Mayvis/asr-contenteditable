@@ -40,6 +40,11 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
     return
   }
 
+  if (e.code === "Tab") {
+    e.preventDefault()
+    return
+  }
+
   if (e.isComposing === true) return
 
   const isController =
@@ -61,6 +66,7 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
         e.key !== "Backspace" &&
         e.key !== "Delete" &&
         e.key !== "Enter" &&
+        e.key !== "Tab" &&
         e.ctrlKey === false &&
         e.metaKey === false &&
         (e.altKey === false || (e.key !== "Alt" && e.altKey === true)) &&
@@ -102,6 +108,7 @@ function handleContenteditableKeydown(e: KeyboardEvent) {
       e.key !== "Backspace" &&
       e.key !== "Delete" &&
       e.key !== "Enter" &&
+      e.key !== "Tab" &&
       e.ctrlKey === false &&
       e.metaKey === false &&
       (e.altKey === false || (e.key !== "Alt" && e.altKey === true)) &&
