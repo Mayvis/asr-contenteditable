@@ -154,6 +154,16 @@ function handleInsertTag(tag: string) {
         selection.addRange(cloneRange)
       }
     }
+  } else if (cloneRange.startContainer.nodeName === "DIV") {
+    // 代表直接在 contenteditable 插入，那就直接插入
+    const node = handleCreateTag(tag)
+
+    cloneRange.collapse(false)
+    cloneRange.insertNode(node)
+    cloneRange.setStart(cloneRange.startContainer, 0)
+
+    selection.removeAllRanges()
+    selection.addRange(cloneRange)
   }
 }
 
