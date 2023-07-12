@@ -186,13 +186,7 @@ function handleFormat() {
   const html = (document.querySelector(".contenteditable") as HTMLDivElement)
     .innerHTML
 
-  result.value = html
-    .replaceAll("[TW]", "")
-    .replaceAll("[EN]", "")
-    .replaceAll('<span class="tw">', "[TW]")
-    .replaceAll('<span class="en">', "[EN]")
-    .replaceAll("</span>", "")
-    .replace(/(<([^>]+)>)/gi, "")
+  result.value = html.replace(/(<([^>]+)>)/gi, "").replace(/&nbsp;/g, "")
 }
 
 function handleClear() {
